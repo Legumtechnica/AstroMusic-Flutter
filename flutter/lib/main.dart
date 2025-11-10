@@ -23,13 +23,13 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: ThemeData(
         textTheme: TextTheme(
-          headline1: TextStyle(
+          headlineLarge: TextStyle(
             fontStyle: FontStyle.normal,
             fontWeight: FontWeight.bold,
             fontSize: 32,
             color: Color(0xFF464646),
           ),
-          headline2: TextStyle(
+          headlineMedium: TextStyle(
             fontStyle: FontStyle.normal,
             fontWeight: FontWeight.w700,
             fontSize: 18,
