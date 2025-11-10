@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:meditation_app/provider/base_view.dart';
-import 'package:meditation_app/src/widgets/bottom_nav_bar.dart';
-import 'package:meditation_app/view/discover_screen_view_model.dart';
+import 'package:astro_music/provider/base_view.dart';
+import 'package:astro_music/src/widgets/bottom_nav_bar.dart';
+import 'package:astro_music/view/discover_screen_view_model.dart';
 import 'components/body.dart';
 
 class DiscoverScreen extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:meditation_app/config/size_config.dart';
-import 'package:meditation_app/src/screens/discover_screen/components/unlockToPremium.dart';
-import 'package:meditation_app/src/screens/player_screen/components/playingDetails.dart';
-import 'package:meditation_app/view/player_screen_view_model.dart';
+import 'package:astro_music/config/size_config.dart';
+import 'package:astro_music/src/screens/discover_screen/components/unlockToPremium.dart';
+import 'package:astro_music/src/screens/player_screen/components/playingDetails.dart';
+import 'package:astro_music/view/player_screen_view_model.dart';
 
 class Body extends StatelessWidget {
   final PlayerScreenViewModel model;

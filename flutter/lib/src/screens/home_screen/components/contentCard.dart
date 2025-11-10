@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meditation_app/config/size_config.dart';
-import 'package:meditation_app/view/home_screen_view_model.dart';
+import 'package:astro_music/config/size_config.dart';
+import 'package:astro_music/view/home_screen_view_model.dart';
 import 'cardButton.dart';
 
 class ContentCard extends StatelessWidget {

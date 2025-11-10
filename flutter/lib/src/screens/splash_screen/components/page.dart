@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:meditation_app/config/size_config.dart';
-import 'package:meditation_app/src/screens/splash_screen/components/pageCard.dart';
+import 'package:astro_music/config/size_config.dart';
+import 'package:astro_music/src/screens/splash_screen/components/pageCard.dart';
 
 Widget CustomPage(
     {required int index,

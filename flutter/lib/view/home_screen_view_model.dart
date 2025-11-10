@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:meditation_app/provider/base_model.dart';
-import 'package:meditation_app/src/screens/home_screen/components/listItem.dart';
+import 'package:astro_music/provider/base_model.dart';
+import 'package:astro_music/src/screens/home_screen/components/listItem.dart';
 
 class HomeScreenViewModel extends BaseModel {
   int selectedIndex = 0;

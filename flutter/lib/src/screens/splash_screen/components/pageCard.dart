@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glassmorphism/glassmorphism.dart';
-import 'package:meditation_app/config/size_config.dart';
-import 'package:meditation_app/src/screens/splash_screen/components/customButton.dart';
+import 'package:astro_music/config/size_config.dart';
+import 'package:astro_music/src/screens/splash_screen/components/customButton.dart';
 
 Widget PageCard(
     {required int index, required String headline, required String subline}) {
