@@ -1,4 +1,4 @@
-package com.flutterapp.meditation_app
+package com.flutterapp.astro_music
 
 import io.flutter.embedding.android.FlutterActivity
 
