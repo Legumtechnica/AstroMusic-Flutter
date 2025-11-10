@@ -47,7 +47,7 @@ class AstrologyService {
         birthDateTime.month,
         birthDateTime.day,
         birthDateTime.hour + birthDateTime.minute / 60.0,
-        CalendarType.Gregorian,
+        CalendarType.SE_GREG_CAL,
       );
 
       // Calculate planetary positions
@@ -94,7 +94,7 @@ class AstrologyService {
       now.month,
       now.day,
       now.hour + now.minute / 60.0,
-      CalendarType.Gregorian,
+      CalendarType.SE_GREG_CAL,
     );
 
     return await _calculatePlanets(julianDay);
@@ -144,15 +144,15 @@ class AstrologyService {
     final planets = <Planet>[];
 
     // Map of HeavenlyBody to PlanetType
-    final planetMap = {
-      HeavenlyBody.Sun: PlanetType.sun,
-      HeavenlyBody.Moon: PlanetType.moon,
-      HeavenlyBody.Mercury: PlanetType.mercury,
-      HeavenlyBody.Venus: PlanetType.venus,
-      HeavenlyBody.Mars: PlanetType.mars,
-      HeavenlyBody.Jupiter: PlanetType.jupiter,
-      HeavenlyBody.Saturn: PlanetType.saturn,
-      HeavenlyBody.MeanNode: PlanetType.rahu, // Rahu (mean node)
+    final Map<HeavenlyBody, PlanetType> planetMap = {
+      HeavenlyBody.SE_SUN: PlanetType.sun,
+      HeavenlyBody.SE_MOON: PlanetType.moon,
+      HeavenlyBody.SE_MERCURY: PlanetType.mercury,
+      HeavenlyBody.SE_VENUS: PlanetType.venus,
+      HeavenlyBody.SE_MARS: PlanetType.mars,
+      HeavenlyBody.SE_JUPITER: PlanetType.jupiter,
+      HeavenlyBody.SE_SATURN: PlanetType.saturn,
+      HeavenlyBody.SE_MEAN_NODE: PlanetType.rahu, // if mean-node constant exists
     };
 
     for (var entry in planetMap.entries) {
@@ -160,14 +160,14 @@ class AstrologyService {
         final result = Sweph.swe_calc_ut(
           julianDay,
           entry.key,
-          SwephFlag.Speed,
+          SwephFlag.SEFLG_SPEED,
         );
 
         final longitude = result.longitude;
         final latitude = result.latitude;
         final sign = _getZodiacSign(longitude);
         final house = _getHouseFromLongitude(longitude);
-        final isRetrograde = result.speedLongitude < 0; // Speed < 0 means retrograde
+        final isRetrograde = result.speedInLongitude < 0; // Speed < 0 means retrograde
 
         planets.add(Planet(
           type: entry.value,
@@ -209,12 +209,12 @@ class AstrologyService {
         julianDay,
         latitude,
         longitude,
-        Hsys.Placidus,
+        Hsys.P,
       );
 
       return {
-        'ascendant': houses.asc,
-        'mc': houses.mc, // Midheaven
+        'ascendant': houses.ascmc[0],
+        'mc': houses.ascmc[1], // Midheaven
         'houses': houses.cusps, // House cusps
       };
     } catch (e) {
