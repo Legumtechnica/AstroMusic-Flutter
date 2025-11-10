@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meditation_app/config/size_config.dart';
-import 'package:meditation_app/view/premium_screen_view_model.dart';
+import 'package:astro_music/config/size_config.dart';
+import 'package:astro_music/view/premium_screen_view_model.dart';
 
 class Body extends StatelessWidget {
   final PremiumScreenViewModel model;

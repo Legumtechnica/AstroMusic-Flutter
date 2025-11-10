@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meditation_app/provider/base_view.dart';
-import 'package:meditation_app/view/profile_screen_view_model.dart';
+import 'package:astro_music/provider/base_view.dart';
+import 'package:astro_music/view/profile_screen_view_model.dart';
 import 'components/body.dart';
 
 class ProfileScreen extends StatelessWidget {

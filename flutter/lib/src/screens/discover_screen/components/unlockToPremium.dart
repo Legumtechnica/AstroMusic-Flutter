@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meditation_app/config/size_config.dart';
+import 'package:astro_music/config/size_config.dart';
 
 class UnlockToPremium extends StatelessWidget {
   final String text;

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:meditation_app/config/size_config.dart';
-import 'package:meditation_app/src/screens/discover_screen/components/iconButtons.dart';
-import 'package:meditation_app/src/screens/discover_screen/components/search_bar.dart';
-import 'package:meditation_app/src/screens/discover_screen/components/seeAllWidget.dart';
-import 'package:meditation_app/src/screens/discover_screen/components/unlockToPremium.dart';
-import 'package:meditation_app/src/screens/player_screen/player_screen.dart';
-import 'package:meditation_app/view/discover_screen_view_model.dart';
+import 'package:astro_music/config/size_config.dart';
+import 'package:astro_music/src/screens/discover_screen/components/iconButtons.dart';
+import 'package:astro_music/src/screens/discover_screen/components/search_bar.dart';
+import 'package:astro_music/src/screens/discover_screen/components/seeAllWidget.dart';
+import 'package:astro_music/src/screens/discover_screen/components/unlockToPremium.dart';
+import 'package:astro_music/src/screens/player_screen/player_screen.dart';
+import 'package:astro_music/view/discover_screen_view_model.dart';
 import 'discoverListItems.dart';
 
 class Body extends StatelessWidget {

@@ -1,5 +1,5 @@
-import 'package:meditation_app/provider/base_model.dart';
-import 'package:meditation_app/src/screens/discover_screen/components/discoverListItems.dart';
+import 'package:astro_music/provider/base_model.dart';
+import 'package:astro_music/src/screens/discover_screen/components/discoverListItems.dart';
 
 class DiscoverScreenViewModel extends BaseModel {
   final List<DiscoverListItems> listOfItems = [
