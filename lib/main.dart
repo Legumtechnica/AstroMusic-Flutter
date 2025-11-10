@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:meditation_app/provider/getit.dart';
-import 'package:meditation_app/routes/routes.dart';
-import 'package:meditation_app/service/navigation_service.dart';
-import 'package:meditation_app/src/screens/home_screen/home_screen.dart';
-import 'package:meditation_app/src/screens/splash_screen/splash_screen.dart';
+import 'package:astro_music/provider/getit.dart';
+import 'package:astro_music/routes/routes.dart';
+import 'package:astro_music/service/navigation_service.dart';
+import 'package:astro_music/src/screens/splash_screen/splash_screen.dart';
 
-void main() {
-  setupLocator();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await setupLocator();
   runApp(const MyApp());
 }
 
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Medit8',
+      title: 'AstroMusic',
       navigatorKey: getIt<NavigationService>().navigatorKey,
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system,
