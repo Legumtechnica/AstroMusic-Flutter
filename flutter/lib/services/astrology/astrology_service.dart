@@ -1,82 +1,57 @@
-import 'package:sweph/sweph.dart';
+import 'package:dio/dio.dart';
 import '../../models/birth_chart.dart';
 import '../../models/planet.dart';
 import '../../models/user_profile.dart';
 import '../../models/cosmic_influence.dart';
 
+/// AstrologyService - Handles all astrological calculations via backend API
+/// 
+/// This service communicates with the backend Python API for:
+/// - Birth chart calculations (Lagna, planetary positions, houses)
+/// - Current planetary transits
+/// - Cosmic influence analysis
+/// - Raag recommendations based on astrological data
 class AstrologyService {
-  late Sweph _sweph;
+  final Dio _dio = Dio();
+  final String _baseUrl;
   bool _isInitialized = false;
+
+  AstrologyService({String? baseUrl})
+      : _baseUrl = baseUrl ?? 'https://api.astromusic.app';
 
   Future<void> initialize() async {
     if (_isInitialized) return;
 
     try {
-      // Initialize Swiss Ephemeris
-      _sweph = Sweph();
-      await Sweph.init();
+      // Configure Dio for API calls
+      _dio.options.baseUrl = _baseUrl;
+      _dio.options.connectTimeout = const Duration(seconds: 10);
+      _dio.options.receiveTimeout = const Duration(seconds: 10);
       _isInitialized = true;
+      print('Astrology Service initialized with backend: $_baseUrl');
     } catch (e) {
-      print('Error initializing Swiss Ephemeris: $e');
+      print('Error initializing Astrology Service: $e');
       rethrow;
     }
   }
 
-  /// Calculate birth chart for a user
+  /// Calculate birth chart for a user via backend API
   Future<BirthChart> calculateBirthChart(UserProfile user) async {
     if (!_isInitialized) await initialize();
 
     try {
-      // Parse birth time
-      final timeParts = user.birthTime.split(':');
-      final hour = int.parse(timeParts[0]);
-      final minute = int.parse(timeParts[1]);
+      final response = await _dio.post('/api/astrology/birth-chart', data: {
+        'birth_date': user.birthDate.toIso8601String(),
+        'birth_time': user.birthTime,
+        'birth_latitude': user.birthLatitude,
+        'birth_longitude': user.birthLongitude,
+      });
 
-      // Create DateTime with birth details
-      final birthDateTime = DateTime(
-        user.birthDate.year,
-        user.birthDate.month,
-        user.birthDate.day,
-        hour,
-        minute,
-      );
-
-      // Convert to Julian Day
-      final julianDay = Sweph.swe_julday(
-        birthDateTime.year,
-        birthDateTime.month,
-        birthDateTime.day,
-        birthDateTime.hour + birthDateTime.minute / 60.0,
-        CalendarType.SE_GREG_CAL,
-      );
-
-      // Calculate planetary positions
-      final planets = await _calculatePlanets(julianDay);
-
-      // Calculate houses and ascendant
-      final houses = await _calculateHouses(
-        julianDay,
-        user.birthLatitude,
-        user.birthLongitude,
-      );
-
-      // Determine ascendant sign
-      final ascendantSign = _getZodiacSign(houses['ascendant']!);
-
-      // Get moon sign and sun sign
-      final moonPlanet = planets.firstWhere((p) => p.type == PlanetType.moon);
-      final sunPlanet = planets.firstWhere((p) => p.type == PlanetType.sun);
-
-      return BirthChart(
-        userId: user.id,
-        calculatedAt: DateTime.now(),
-        planets: planets,
-        ascendant: ascendantSign,
-        ascendantDegree: houses['ascendant']!,
-        housePositions: houses['houses']!.cast<int>(),
-        moonSign: moonPlanet.sign.toString().split('.').last,
-        sunSign: sunPlanet.sign.toString().split('.').last,
-        description: _generateChartDescription(planets, ascendantSign),
+      // TODO: Parse response and create BirthChart object
+      // For now, return a placeholder
+      throw UnimplementedError(
+        'Backend API endpoint /api/astrology/birth-chart not yet implemented. '
+        'Response would be: ${response.data}'
       );
     } catch (e) {
       print('Error calculating birth chart: $e');
@@ -84,231 +59,53 @@ class AstrologyService {
     }
   }
 
-  /// Calculate current planetary positions for transits
+  /// Calculate current planetary transits via backend API
   Future<List<Planet>> calculateCurrentTransits() async {
     if (!_isInitialized) await initialize();
 
-    final now = DateTime.now();
-    final julianDay = Sweph.swe_julday(
-      now.year,
-      now.month,
-      now.day,
-      now.hour + now.minute / 60.0,
-      CalendarType.SE_GREG_CAL,
-    );
-
-    return await _calculatePlanets(julianDay);
-  }
-
-  /// Calculate cosmic influence for today
-  Future<CosmicInfluence> calculateCosmicInfluence(
-    UserProfile user,
-    BirthChart birthChart,
-  ) async {
-    final currentTransits = await calculateCurrentTransits();
-
-    // Analyze transits against birth chart
-    final activeTransits = _analyzeTransits(birthChart.planets, currentTransits);
-
-    // Determine energy level
-    final energyLevel = _calculateEnergyLevel(activeTransits);
-
-    // Determine dominant moods
-    final moods = _determineMoods(activeTransits, birthChart);
-
-    // Generate recommendations
-    final recommendations = _generateRecommendations(activeTransits, moods);
-
-    // Find lucky raag
-    final luckyRaag = _determineLuckyRaag(currentTransits, birthChart);
-
-    // Calculate overall score
-    final score = _calculateOverallScore(activeTransits);
-
-    return CosmicInfluence(
-      userId: user.id,
-      date: DateTime.now(),
-      energyLevel: energyLevel,
-      dominantMoods: moods,
-      overallDescription: _generateOverallDescription(activeTransits, energyLevel),
-      recommendations: recommendations,
-      activeTransits: activeTransits,
-      luckyRaag: luckyRaag,
-      overallScore: score,
-    );
-  }
-
-  // Private helper methods
-
-  Future<List<Planet>> _calculatePlanets(double julianDay) async {
-    final planets = <Planet>[];
-
-    // Map of HeavenlyBody to PlanetType
-    final Map<HeavenlyBody, PlanetType> planetMap = {
-      HeavenlyBody.SE_SUN: PlanetType.sun,
-      HeavenlyBody.SE_MOON: PlanetType.moon,
-      HeavenlyBody.SE_MERCURY: PlanetType.mercury,
-      HeavenlyBody.SE_VENUS: PlanetType.venus,
-      HeavenlyBody.SE_MARS: PlanetType.mars,
-      HeavenlyBody.SE_JUPITER: PlanetType.jupiter,
-      HeavenlyBody.SE_SATURN: PlanetType.saturn,
-      HeavenlyBody.SE_MEAN_NODE: PlanetType.rahu, // if mean-node constant exists
-    };
-
-    for (var entry in planetMap.entries) {
-      try {
-        final result = Sweph.swe_calc_ut(
-          julianDay,
-          entry.key,
-          SwephFlag.SEFLG_SPEED,
-        );
-
-        final longitude = result.longitude;
-        final latitude = result.latitude;
-        final sign = _getZodiacSign(longitude);
-        final house = _getHouseFromLongitude(longitude);
-        final isRetrograde = result.speedInLongitude < 0; // Speed < 0 means retrograde
-
-        planets.add(Planet(
-          type: entry.value,
-          longitude: longitude,
-          latitude: latitude,
-          sign: sign,
-          house: house,
-          isRetrograde: isRetrograde,
-        ));
-      } catch (e) {
-        print('Error calculating planet ${entry.value}: $e');
-      }
-    }
-
-    // Calculate Ketu (180 degrees opposite to Rahu)
-    final rahu = planets.firstWhere((p) => p.type == PlanetType.rahu);
-    final ketuLongitude = (rahu.longitude + 180) % 360;
-    planets.add(Planet(
-      type: PlanetType.ketu,
-      longitude: ketuLongitude,
-      latitude: -rahu.latitude,
-      sign: _getZodiacSign(ketuLongitude),
-      house: _getHouseFromLongitude(ketuLongitude),
-      isRetrograde: rahu.isRetrograde,
-    ));
-
-    return planets;
-  }
-
-  Future<Map<String, dynamic>> _calculateHouses(
-    double julianDay,
-    double latitude,
-    double longitude,
-  ) async {
     try {
-      // Use Placidus house system (common in Western astrology)
-      // For Vedic, you might want to use Whole Sign houses
-      final houses = Sweph.swe_houses(
-        julianDay,
-        latitude,
-        longitude,
-        Hsys.P,
-      );
+      final response = await _dio.get('/api/astrology/transits');
 
-      return {
-        'ascendant': houses.ascmc[0],
-        'mc': houses.ascmc[1], // Midheaven
-        'houses': houses.cusps, // House cusps
-      };
+      // TODO: Parse response and create Planet objects
+      throw UnimplementedError(
+        'Backend API endpoint /api/astrology/transits not yet implemented'
+      );
     } catch (e) {
-      print('Error calculating houses: $e');
+      print('Error calculating transits: $e');
       rethrow;
     }
   }
 
-  ZodiacSign _getZodiacSign(double longitude) {
-    final signIndex = (longitude / 30).floor();
-    return ZodiacSign.values[signIndex % 12];
-  }
+  /// Calculate cosmic influence for today via backend API
+  Future<CosmicInfluence> calculateCosmicInfluence(
+    UserProfile user,
+    BirthChart birthChart,
+  ) async {
+    if (!_isInitialized) await initialize();
 
-  int _getHouseFromLongitude(double longitude) {
-    // Simplified house calculation
-    // In real implementation, use proper house system
-    return ((longitude / 30).floor() % 12) + 1;
-  }
+    try {
+      final response = await _dio.post('/api/astrology/cosmic-influence', data: {
+        'user_id': user.id,
+        'birth_chart': {
+          'sun_sign': birthChart.sunSign,
+          'moon_sign': birthChart.moonSign,
+          'ascendant': birthChart.ascendant.toString(),
+        },
+        'date': DateTime.now().toIso8601String(),
+      });
 
-  String _generateChartDescription(List<Planet> planets, ZodiacSign ascendant) {
-    return 'Birth chart with ${ascendant.toString().split('.').last} rising. '
-        'This chart shows the cosmic blueprint at the time of birth.';
-  }
-
-  List<PlanetaryTransit> _analyzeTransits(
-    List<Planet> natalPlanets,
-    List<Planet> transitPlanets,
-  ) {
-    final transits = <PlanetaryTransit>[];
-
-    for (final transitPlanet in transitPlanets) {
-      // Find aspects to natal planets
-      // This is simplified - real implementation would calculate exact aspects
-      transits.add(PlanetaryTransit(
-        planet: transitPlanet.type,
-        currentSign: transitPlanet.sign,
-        description: '${transitPlanet.name} in ${transitPlanet.sign.toString().split('.').last}',
-        influence: 'Neutral',
-        startDate: DateTime.now(),
-        intensity: 0.5,
-      ));
+      // TODO: Parse response and create CosmicInfluence object
+      throw UnimplementedError(
+        'Backend API endpoint /api/astrology/cosmic-influence not yet implemented'
+      );
+    } catch (e) {
+      print('Error calculating cosmic influence: $e');
+      rethrow;
     }
-
-    return transits;
-  }
-
-  EnergyLevel _calculateEnergyLevel(List<PlanetaryTransit> transits) {
-    // Simplified energy calculation
-    // In reality, analyze Mars, Sun positions and aspects
-    return EnergyLevel.moderate;
-  }
-
-  List<MoodType> _determineMoods(
-    List<PlanetaryTransit> transits,
-    BirthChart chart,
-  ) {
-    // Analyze Moon position and aspects for moods
-    return [MoodType.calm, MoodType.focused];
-  }
-
-  List<String> _generateRecommendations(
-    List<PlanetaryTransit> transits,
-    List<MoodType> moods,
-  ) {
-    return [
-      'Good day for meditation and introspection',
-      'Listen to calming raags to balance your energy',
-      'Practice deep breathing exercises',
-    ];
-  }
-
-  String? _determineLuckyRaag(List<Planet> transits, BirthChart chart) {
-    // Map current planetary positions to appropriate raag
-    // This would use the raag mapping system
-    return 'Raag Yaman';
-  }
-
-  double _calculateOverallScore(List<PlanetaryTransit> transits) {
-    // Calculate overall favorability score
-    return 75.0;
-  }
-
-  String _generateOverallDescription(
-    List<PlanetaryTransit> transits,
-    EnergyLevel energy,
-  ) {
-    return 'Today\'s cosmic energy is ${energy.toString().split('.').last}. '
-        'The planets are aligned favorably for creative pursuits and meditation.';
   }
 
   void dispose() {
-    if (_isInitialized) {
-      Sweph.swe_close();
-      _isInitialized = false;
-    }
+    _dio.close();
+    _isInitialized = false;
   }
 }

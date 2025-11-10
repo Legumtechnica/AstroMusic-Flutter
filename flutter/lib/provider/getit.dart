@@ -23,14 +23,17 @@ Future<void> setupLocator() async {
   await storageService.initialize();
   getIt.registerSingleton<StorageService>(storageService);
 
-  final astrologyService = AstrologyService();
+  // TODO: Replace with your actual backend API URL
+  const apiBaseUrl = 'https://api.astromusic.app'; // Or use 'http://localhost:8000' for local dev
+
+  final astrologyService = AstrologyService(baseUrl: apiBaseUrl);
   await astrologyService.initialize();
   getIt.registerSingleton<AstrologyService>(astrologyService);
 
   getIt.registerLazySingleton(() => RaagMappingService());
 
   getIt.registerLazySingleton(() => MusicGenerationService(
-    apiBaseUrl: 'https://api.astromusic.app', // Replace with your API URL
+    apiBaseUrl: apiBaseUrl,
   ));
 
   // ViewModels (Factories - new instance each time)
