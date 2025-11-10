@@ -57,8 +57,8 @@ dependencies:
   timezone: ^0.9.1
 
   # Location Services
-  geolocator: ^9.0.2
-  geocoding: ^2.0.5
+  geolocator: ^13.0.2
+  geocoding: ^3.0.0
 
   # Astronomy & Astrology Calculations
   sweph: ^3.0.0
