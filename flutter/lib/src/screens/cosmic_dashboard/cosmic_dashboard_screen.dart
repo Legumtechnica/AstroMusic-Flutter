@@ -3,6 +3,7 @@ import 'package:astro_music/config/size_config.dart';
 import 'package:astro_music/provider/base_view.dart';
 import 'package:astro_music/view/cosmic_dashboard_view_model.dart';
 import 'package:astro_music/enum/view_state.dart';
+import 'package:astro_music/models/raag.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 
 class CosmicDashboardScreen extends StatelessWidget {
@@ -29,7 +30,7 @@ class CosmicDashboardScreen extends StatelessWidget {
             ),
           ),
           child: SafeArea(
-            child: model.state == ViewState.busy
+            child: model.state == ViewState.Busy
                 ? Center(child: CircularProgressIndicator())
                 : model.errorMessage != null
                     ? _buildError(model)
