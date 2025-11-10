@@ -1,19 +1,45 @@
 import 'package:get_it/get_it.dart';
-import 'package:meditation_app/service/navigation_service.dart';
-import 'package:meditation_app/view/discover_screen_view_model.dart';
-import 'package:meditation_app/view/home_screen_view_model.dart';
-import 'package:meditation_app/view/player_screen_view_model.dart';
-import 'package:meditation_app/view/premium_screen_view_model.dart';
-import 'package:meditation_app/view/profile_screen_view_model.dart';
-import 'package:meditation_app/view/splash_screen_view_model.dart';
+import 'package:astro_music/service/navigation_service.dart';
+import 'package:astro_music/services/storage_service.dart';
+import 'package:astro_music/services/astrology/astrology_service.dart';
+import 'package:astro_music/services/astrology/raag_mapping_service.dart';
+import 'package:astro_music/services/music/music_generation_service.dart';
+import 'package:astro_music/view/splash_screen_view_model.dart';
+import 'package:astro_music/view/onboarding_view_model.dart';
+import 'package:astro_music/view/home_screen_view_model.dart';
+import 'package:astro_music/view/discover_screen_view_model.dart';
+import 'package:astro_music/view/player_screen_view_model.dart';
+import 'package:astro_music/view/premium_screen_view_model.dart';
+import 'package:astro_music/view/profile_screen_view_model.dart';
+import 'package:astro_music/view/cosmic_dashboard_view_model.dart';
 
 GetIt getIt = GetIt.instance;
-void setupLocator() {
+
+Future<void> setupLocator() async {
+  // Services (Singletons)
   getIt.registerLazySingleton(() => NavigationService());
+
+  final storageService = StorageService();
+  await storageService.initialize();
+  getIt.registerSingleton<StorageService>(storageService);
+
+  final astrologyService = AstrologyService();
+  await astrologyService.initialize();
+  getIt.registerSingleton<AstrologyService>(astrologyService);
+
+  getIt.registerLazySingleton(() => RaagMappingService());
+
+  getIt.registerLazySingleton(() => MusicGenerationService(
+    apiBaseUrl: 'https://api.astromusic.app', // Replace with your API URL
+  ));
+
+  // ViewModels (Factories - new instance each time)
   getIt.registerFactory(() => SplashScreenViewModel());
+  getIt.registerFactory(() => OnboardingViewModel());
   getIt.registerFactory(() => HomeScreenViewModel());
   getIt.registerFactory(() => DiscoverScreenViewModel());
   getIt.registerFactory(() => PlayerScreenViewModel());
   getIt.registerFactory(() => PremiumScreenViewModel());
   getIt.registerFactory(() => ProfileScreenViewModel());
+  getIt.registerFactory(() => CosmicDashboardViewModel());
 }

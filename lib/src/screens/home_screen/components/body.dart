@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meditation_app/config/size_config.dart';
-import 'package:meditation_app/view/home_screen_view_model.dart';
+import 'package:astro_music/config/size_config.dart';
+import 'package:astro_music/view/home_screen_view_model.dart';
 import 'contentCard.dart';
 import 'header.dart';
 
@@ -32,7 +32,7 @@ class Body extends StatelessWidget {
           SizedBox(
             height: getProportionateScreenHeight(40),
           ),
-          header(),
+          header(context),
           SizedBox(
             height: getProportionateScreenHeight(12),
           ),
