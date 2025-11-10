@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.flutterapp.meditation_app">
+    package="com.flutterapp.astro_music">
    <application
-        android:label="Medit8"
+        android:label="AstroMusic"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
