@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.flutterapp.astro_music">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
    <application
         android:label="AstroMusic"
         android:name="${applicationName}"
