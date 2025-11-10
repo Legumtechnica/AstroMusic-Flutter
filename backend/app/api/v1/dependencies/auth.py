@@ -1,28 +1,24 @@
 """
-Authentication dependencies
+Authentication dependencies (Neo4j version)
 """
 from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.base import get_db
 from app.core.security import decode_token
 from app.services.user_service import UserService
-from app.models.user import User
+from app.models.user_neo4j import User
 
 security = HTTPBearer()
 
 
-async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: AsyncSession = Depends(get_db)
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
 ) -> User:
     """
     Get current authenticated user
 
     Args:
         credentials: HTTP authorization credentials
-        db: Database session
 
     Returns:
         Current user
@@ -55,7 +51,7 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    user = await UserService.get_by_id(db, user_id)
+    user = UserService.get_by_id(user_id)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -72,7 +68,7 @@ async def get_current_user(
     return user
 
 
-async def get_current_active_user(
+def get_current_active_user(
     current_user: User = Depends(get_current_user)
 ) -> User:
     """Get current active user"""

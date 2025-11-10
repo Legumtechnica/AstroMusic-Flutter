@@ -3,8 +3,23 @@ AstroMusic API - Main application
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 from app.core.config import settings
 from app.api.v1.api import api_router
+from app.db.neo4j_base import init_neo4j, close_neo4j
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan events"""
+    # Startup: Initialize Neo4j connection
+    print("🚀 Starting AstroMusic API...")
+    init_neo4j()
+    yield
+    # Shutdown: Close Neo4j connection
+    print("👋 Shutting down AstroMusic API...")
+    close_neo4j()
+
 
 # Create FastAPI app
 app = FastAPI(
@@ -13,6 +28,7 @@ app = FastAPI(
     description="AstroMusic API - Where the Universe Meets Melody",
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
 # Setup CORS

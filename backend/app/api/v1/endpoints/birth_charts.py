@@ -1,22 +1,19 @@
 """
-Birth Chart endpoints
+Birth Chart endpoints (Neo4j version)
 """
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.base import get_db
 from app.schemas.birth_chart import BirthChart, BirthChartCreate, BirthChartData
 from app.services.birth_chart_service import BirthChartService
 from app.api.v1.dependencies.auth import get_current_active_user
-from app.models.user import User
+from app.models.user_neo4j import User
 
 router = APIRouter()
 
 
 @router.post("", response_model=BirthChart, status_code=status.HTTP_201_CREATED)
-async def create_birth_chart(
+def create_birth_chart(
     chart_data: BirthChartCreate,
-    current_user: User = Depends(get_current_active_user),
-    db: AsyncSession = Depends(get_db)
+    current_user: User = Depends(get_current_active_user)
 ):
     """
     Create or update birth chart for current user
@@ -24,26 +21,23 @@ async def create_birth_chart(
     Args:
         chart_data: Birth chart data
         current_user: Current authenticated user
-        db: Database session
 
     Returns:
         Created/updated birth chart
     """
-    chart = await BirthChartService.create_or_update(db, current_user.id, chart_data)
+    chart = BirthChartService.create_or_update(current_user, chart_data)
     return chart
 
 
 @router.get("/me", response_model=BirthChart)
-async def get_my_birth_chart(
-    current_user: User = Depends(get_current_active_user),
-    db: AsyncSession = Depends(get_db)
+def get_my_birth_chart(
+    current_user: User = Depends(get_current_active_user)
 ):
     """
     Get birth chart for current user
 
     Args:
         current_user: Current authenticated user
-        db: Database session
 
     Returns:
         Birth chart
@@ -51,7 +45,7 @@ async def get_my_birth_chart(
     Raises:
         HTTPException: If birth chart not found
     """
-    chart = await BirthChartService.get_by_user_id(db, current_user.id)
+    chart = BirthChartService.get_by_user(current_user)
 
     if not chart:
         raise HTTPException(
@@ -63,16 +57,14 @@ async def get_my_birth_chart(
 
 
 @router.get("/me/data", response_model=BirthChartData)
-async def get_my_birth_chart_data(
-    current_user: User = Depends(get_current_active_user),
-    db: AsyncSession = Depends(get_db)
+def get_my_birth_chart_data(
+    current_user: User = Depends(get_current_active_user)
 ):
     """
     Get parsed birth chart data for current user
 
     Args:
         current_user: Current authenticated user
-        db: Database session
 
     Returns:
         Parsed birth chart data
@@ -80,7 +72,7 @@ async def get_my_birth_chart_data(
     Raises:
         HTTPException: If birth chart not found
     """
-    chart = await BirthChartService.get_by_user_id(db, current_user.id)
+    chart = BirthChartService.get_by_user(current_user)
 
     if not chart:
         raise HTTPException(
@@ -105,21 +97,19 @@ async def get_my_birth_chart_data(
 
 
 @router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_my_birth_chart(
-    current_user: User = Depends(get_current_active_user),
-    db: AsyncSession = Depends(get_db)
+def delete_my_birth_chart(
+    current_user: User = Depends(get_current_active_user)
 ):
     """
     Delete birth chart for current user
 
     Args:
         current_user: Current authenticated user
-        db: Database session
 
     Raises:
         HTTPException: If birth chart not found
     """
-    chart = await BirthChartService.get_by_user_id(db, current_user.id)
+    chart = BirthChartService.get_by_user(current_user)
 
     if not chart:
         raise HTTPException(
@@ -127,5 +117,5 @@ async def delete_my_birth_chart(
             detail="Birth chart not found"
         )
 
-    await BirthChartService.delete(db, chart)
+    BirthChartService.delete(chart)
     return None

@@ -1,9 +1,7 @@
 """
-Authentication endpoints
+Authentication endpoints (Neo4j version)
 """
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.base import get_db
+from fastapi import APIRouter, HTTPException, status
 from app.schemas.auth import Token, LoginRequest, RefreshTokenRequest
 from app.schemas.user import UserCreate, User
 from app.services.user_service import UserService
@@ -13,16 +11,12 @@ router = APIRouter()
 
 
 @router.post("/register", response_model=User, status_code=status.HTTP_201_CREATED)
-async def register(
-    user_data: UserCreate,
-    db: AsyncSession = Depends(get_db)
-):
+def register(user_data: UserCreate):
     """
     Register a new user
 
     Args:
         user_data: User registration data
-        db: Database session
 
     Returns:
         Created user
@@ -31,7 +25,7 @@ async def register(
         HTTPException: If email already exists
     """
     # Check if user already exists
-    existing_user = await UserService.get_by_email(db, user_data.email)
+    existing_user = UserService.get_by_email(user_data.email)
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -39,21 +33,17 @@ async def register(
         )
 
     # Create user
-    user = await UserService.create(db, user_data)
+    user = UserService.create(user_data)
     return user
 
 
 @router.post("/login", response_model=Token)
-async def login(
-    login_data: LoginRequest,
-    db: AsyncSession = Depends(get_db)
-):
+def login(login_data: LoginRequest):
     """
     Login with email and password
 
     Args:
         login_data: Login credentials
-        db: Database session
 
     Returns:
         Access and refresh tokens
@@ -61,7 +51,7 @@ async def login(
     Raises:
         HTTPException: If authentication fails
     """
-    user = await UserService.authenticate(db, login_data.email, login_data.password)
+    user = UserService.authenticate(login_data.email, login_data.password)
 
     if not user:
         raise HTTPException(
@@ -88,16 +78,12 @@ async def login(
 
 
 @router.post("/refresh", response_model=Token)
-async def refresh_token(
-    refresh_data: RefreshTokenRequest,
-    db: AsyncSession = Depends(get_db)
-):
+def refresh_token(refresh_data: RefreshTokenRequest):
     """
     Refresh access token using refresh token
 
     Args:
         refresh_data: Refresh token
-        db: Database session
 
     Returns:
         New access and refresh tokens
@@ -123,7 +109,7 @@ async def refresh_token(
         )
 
     # Verify user exists and is active
-    user = await UserService.get_by_id(db, user_id)
+    user = UserService.get_by_id(user_id)
     if not user or not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
