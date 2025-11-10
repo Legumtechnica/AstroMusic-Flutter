@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:astro_music/config/size_config.dart';
 import 'package:astro_music/src/screens/discover_screen/components/iconButtons.dart';
-import 'package:astro_music/src/screens/discover_screen/components/search_bar.dart';
+import 'package:astro_music/src/screens/discover_screen/components/search_bar.dart' as custom;
 import 'package:astro_music/src/screens/discover_screen/components/seeAllWidget.dart';
 import 'package:astro_music/src/screens/discover_screen/components/unlockToPremium.dart';
 import 'package:astro_music/src/screens/player_screen/player_screen.dart';
@@ -64,7 +64,7 @@ class Body extends StatelessWidget {
           SizedBox(
             height: getProportionateScreenHeight(10),
           ),
-          SearchBar(),
+          custom.SearchBar(),
           SizedBox(
             height: getProportionateScreenHeight(15),
           ),

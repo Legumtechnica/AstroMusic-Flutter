@@ -6,6 +6,7 @@ import '../models/user_profile.dart';
 import '../models/birth_chart.dart';
 import '../services/storage_service.dart';
 import '../services/astrology/astrology_service.dart';
+import '../enum/view_state.dart';
 
 class OnboardingViewModel extends BaseModel {
   final _storageService = getIt<StorageService>();
