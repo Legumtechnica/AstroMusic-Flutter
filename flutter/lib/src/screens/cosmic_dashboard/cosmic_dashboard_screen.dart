@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:astro_music/config/size_config.dart';
 import 'package:astro_music/provider/base_view.dart';
 import 'package:astro_music/view/cosmic_dashboard_view_model.dart';
+import 'package:astro_music/enum/view_state.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 
 class CosmicDashboardScreen extends StatelessWidget {

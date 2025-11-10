@@ -13,6 +13,10 @@ class SizeConfig {
     screenHeight = _mediaQueryData!.size.height;
     orientation = _mediaQueryData!.orientation;
   }
+
+  // Convenience getters for backward compatibility
+  static double? get height => screenHeight;
+  static double? get width => screenWidth;
 }
 
 // Get the proportionate height as per screen size
@@ -28,3 +32,27 @@ double getProportionateScreenWidth(double inputWidth) {
   // 375 is the layout width that designer use
   return (inputWidth / 270) * screenWidth;
 }
+
+// Mixin to provide screen sizing helpers
+mixin ScreenSizeMixin {
+  double proportionateScreenHeight(double inputHeight) {
+    return getProportionateScreenHeight(inputHeight);
+  }
+
+  double proportionateScreenWidth(double inputWidth) {
+    return getProportionateScreenWidth(inputWidth);
+  }
+}
+
+// Extension methods for convenient usage
+extension SizeExtension on num {
+  double get w => getProportionateScreenWidth(toDouble());
+  double get h => getProportionateScreenHeight(toDouble());
+}
+
+// Global helper methods that can be used without context
+double proportionateScreenHeight(double inputHeight) =>
+    getProportionateScreenHeight(inputHeight);
+
+double proportionateScreenWidth(double inputWidth) =>
+    getProportionateScreenWidth(inputWidth);

@@ -14,7 +14,7 @@ class AstrologyService {
     try {
       // Initialize Swiss Ephemeris
       _sweph = Sweph();
-      await _sweph.init();
+      await Sweph.init();
       _isInitialized = true;
     } catch (e) {
       print('Error initializing Swiss Ephemeris: $e');
@@ -42,12 +42,12 @@ class AstrologyService {
       );
 
       // Convert to Julian Day
-      final julianDay = _sweph.swe_julday(
+      final julianDay = Sweph.swe_julday(
         birthDateTime.year,
         birthDateTime.month,
         birthDateTime.day,
         birthDateTime.hour + birthDateTime.minute / 60.0,
-        1, // Gregorian calendar
+        CalendarType.gregorian,
       );
 
       // Calculate planetary positions
@@ -89,12 +89,12 @@ class AstrologyService {
     if (!_isInitialized) await initialize();
 
     final now = DateTime.now();
-    final julianDay = _sweph.swe_julday(
+    final julianDay = Sweph.swe_julday(
       now.year,
       now.month,
       now.day,
       now.hour + now.minute / 60.0,
-      1,
+      CalendarType.gregorian,
     );
 
     return await _calculatePlanets(julianDay);
@@ -168,17 +168,17 @@ class AstrologyService {
 
     for (var i = 0; i < planetIds.length; i++) {
       try {
-        final result = _sweph.swe_calc_ut(
+        final result = Sweph.swe_calc_ut(
           julianDay,
-          planetIds[i],
-          0, // SEFLG_SWIEPH
+          HeavenlyBody.values[planetIds[i]],
+          SwephFlag.speed,
         );
 
-        final longitude = result[0];
-        final latitude = result[1];
+        final longitude = result.longitude;
+        final latitude = result.latitude;
         final sign = _getZodiacSign(longitude);
         final house = _getHouseFromLongitude(longitude);
-        final isRetrograde = result[3] < 0; // Speed < 0 means retrograde
+        final isRetrograde = result.longitudeSpeed < 0; // Speed < 0 means retrograde
 
         planets.add(Planet(
           type: planetTypes[i],
@@ -216,17 +216,17 @@ class AstrologyService {
     try {
       // Use Placidus house system (common in Western astrology)
       // For Vedic, you might want to use Whole Sign houses
-      final houses = _sweph.swe_houses(
+      final houses = Sweph.swe_houses(
         julianDay,
         latitude,
         longitude,
-        'P', // Placidus
+        Hsys.placidus,
       );
 
       return {
-        'ascendant': houses[0],
-        'mc': houses[1], // Midheaven
-        'houses': houses.sublist(2), // House cusps
+        'ascendant': houses.ascendant,
+        'mc': houses.mc, // Midheaven
+        'houses': houses.cusps, // House cusps
       };
     } catch (e) {
       print('Error calculating houses: $e');
@@ -318,7 +318,7 @@ class AstrologyService {
 
   void dispose() {
     if (_isInitialized) {
-      _sweph.swe_close();
+      Sweph.swe_close();
       _isInitialized = false;
     }
   }

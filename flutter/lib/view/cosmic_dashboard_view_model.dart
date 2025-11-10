@@ -10,6 +10,7 @@ import '../services/storage_service.dart';
 import '../services/astrology/astrology_service.dart';
 import '../services/astrology/raag_mapping_service.dart';
 import '../services/music/music_generation_service.dart';
+import '../enum/view_state.dart';
 import 'package:uuid/uuid.dart';
 
 class CosmicDashboardViewModel extends BaseModel {
