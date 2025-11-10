@@ -37,7 +37,7 @@ class CosmicDashboardViewModel extends BaseModel {
   String? errorMessage;
 
   Future<void> loadDashboard() async {
-    setState(ViewState.busy);
+    setState(ViewState.Busy);
     errorMessage = null;
 
     try {
@@ -45,7 +45,7 @@ class CosmicDashboardViewModel extends BaseModel {
       _currentUser = await _storageService.getCurrentUser();
       if (_currentUser == null) {
         errorMessage = 'No user found';
-        setState(ViewState.idle);
+        setState(ViewState.Idle);
         return;
       }
 
@@ -72,10 +72,10 @@ class CosmicDashboardViewModel extends BaseModel {
       // Load personalized tracks
       _personalizedTracks = await _storageService.getUserTracks(_currentUser!.id);
 
-      setState(ViewState.idle);
+      setState(ViewState.Idle);
     } catch (e) {
       errorMessage = 'Failed to load dashboard: ${e.toString()}';
-      setState(ViewState.idle);
+      setState(ViewState.Idle);
       print('Error loading dashboard: $e');
     }
   }
@@ -179,15 +179,15 @@ class CosmicDashboardViewModel extends BaseModel {
   }
 
   Future<void> regeneratePlaylist() async {
-    setState(ViewState.busy);
+    setState(ViewState.Busy);
 
     try {
       _dailyPlaylist = _createEmptyPlaylist();
       await _generateDailyPlaylist();
-      setState(ViewState.idle);
+      setState(ViewState.Idle);
     } catch (e) {
       errorMessage = 'Failed to regenerate playlist';
-      setState(ViewState.idle);
+      setState(ViewState.Idle);
     }
   }
 
@@ -196,7 +196,7 @@ class CosmicDashboardViewModel extends BaseModel {
       return;
     }
 
-    setState(ViewState.busy);
+    setState(ViewState.Busy);
 
     try {
       final raag = _recommendedRaags.first;
@@ -211,10 +211,10 @@ class CosmicDashboardViewModel extends BaseModel {
       await _storageService.saveTrack(track);
       _personalizedTracks.insert(0, track);
 
-      setState(ViewState.idle);
+      setState(ViewState.Idle);
     } catch (e) {
       errorMessage = 'Failed to generate meditation track';
-      setState(ViewState.idle);
+      setState(ViewState.Idle);
     }
   }
 
@@ -223,7 +223,7 @@ class CosmicDashboardViewModel extends BaseModel {
       return;
     }
 
-    setState(ViewState.busy);
+    setState(ViewState.Busy);
 
     try {
       final raag = _recommendedRaags.first;
@@ -236,10 +236,10 @@ class CosmicDashboardViewModel extends BaseModel {
       await _storageService.saveTrack(track);
       _personalizedTracks.insert(0, track);
 
-      setState(ViewState.idle);
+      setState(ViewState.Idle);
     } catch (e) {
       errorMessage = 'Failed to generate sleep track';
-      setState(ViewState.idle);
+      setState(ViewState.Idle);
     }
   }
 

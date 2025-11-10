@@ -91,7 +91,7 @@ class OnboardingViewModel extends BaseModel {
       return false;
     }
 
-    setState(ViewState.busy);
+    setState(ViewState.Busy);
     errorMessage = null;
 
     try {
@@ -122,11 +122,11 @@ class OnboardingViewModel extends BaseModel {
       // Mark onboarding as complete
       await _storageService.setOnboardingComplete(true);
 
-      setState(ViewState.idle);
+      setState(ViewState.Idle);
       return true;
     } catch (e) {
       errorMessage = 'Failed to create profile: ${e.toString()}';
-      setState(ViewState.idle);
+      setState(ViewState.Idle);
       notifyListeners();
       return false;
     }

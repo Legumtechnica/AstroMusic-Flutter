@@ -47,7 +47,7 @@ class AstrologyService {
         birthDateTime.month,
         birthDateTime.day,
         birthDateTime.hour + birthDateTime.minute / 60.0,
-        CalendarType.gregorian,
+        CalendarType.Gregorian,
       );
 
       // Calculate planetary positions
@@ -94,7 +94,7 @@ class AstrologyService {
       now.month,
       now.day,
       now.hour + now.minute / 60.0,
-      CalendarType.gregorian,
+      CalendarType.Gregorian,
     );
 
     return await _calculatePlanets(julianDay);
@@ -143,45 +143,34 @@ class AstrologyService {
   Future<List<Planet>> _calculatePlanets(double julianDay) async {
     final planets = <Planet>[];
 
-    // List of planets to calculate (Swiss Ephemeris constants)
-    final planetIds = [
-      0,  // Sun
-      1,  // Moon
-      2,  // Mercury
-      3,  // Venus
-      4,  // Mars
-      5,  // Jupiter
-      6,  // Saturn
-      11, // Rahu (mean node)
-    ];
+    // Map of HeavenlyBody to PlanetType
+    final planetMap = {
+      HeavenlyBody.Sun: PlanetType.sun,
+      HeavenlyBody.Moon: PlanetType.moon,
+      HeavenlyBody.Mercury: PlanetType.mercury,
+      HeavenlyBody.Venus: PlanetType.venus,
+      HeavenlyBody.Mars: PlanetType.mars,
+      HeavenlyBody.Jupiter: PlanetType.jupiter,
+      HeavenlyBody.Saturn: PlanetType.saturn,
+      HeavenlyBody.MeanNode: PlanetType.rahu, // Rahu (mean node)
+    };
 
-    final planetTypes = [
-      PlanetType.sun,
-      PlanetType.moon,
-      PlanetType.mercury,
-      PlanetType.venus,
-      PlanetType.mars,
-      PlanetType.jupiter,
-      PlanetType.saturn,
-      PlanetType.rahu,
-    ];
-
-    for (var i = 0; i < planetIds.length; i++) {
+    for (var entry in planetMap.entries) {
       try {
         final result = Sweph.swe_calc_ut(
           julianDay,
-          HeavenlyBody.values[planetIds[i]],
-          SwephFlag.speed,
+          entry.key,
+          SwephFlag.Speed,
         );
 
         final longitude = result.longitude;
         final latitude = result.latitude;
         final sign = _getZodiacSign(longitude);
         final house = _getHouseFromLongitude(longitude);
-        final isRetrograde = result.longitudeSpeed < 0; // Speed < 0 means retrograde
+        final isRetrograde = result.speedLongitude < 0; // Speed < 0 means retrograde
 
         planets.add(Planet(
-          type: planetTypes[i],
+          type: entry.value,
           longitude: longitude,
           latitude: latitude,
           sign: sign,
@@ -189,7 +178,7 @@ class AstrologyService {
           isRetrograde: isRetrograde,
         ));
       } catch (e) {
-        print('Error calculating planet ${planetTypes[i]}: $e');
+        print('Error calculating planet ${entry.value}: $e');
       }
     }
 
@@ -220,11 +209,11 @@ class AstrologyService {
         julianDay,
         latitude,
         longitude,
-        Hsys.placidus,
+        Hsys.Placidus,
       );
 
       return {
-        'ascendant': houses.ascendant,
+        'ascendant': houses.asc,
         'mc': houses.mc, // Midheaven
         'houses': houses.cusps, // House cusps
       };
