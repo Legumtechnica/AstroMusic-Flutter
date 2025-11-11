@@ -4,24 +4,54 @@
 
 ### Prerequisites
 - Docker and Docker Compose installed
-- Port 8080 available (or configure a different port)
-- Ports 7474 and 7687 available for Neo4j
+- Port 8080 available for API (or configure a different port)
+- Either:
+  - **Option A**: Existing Neo4j instance running on ports 7474/7687
+  - **Option B**: Available ports for Neo4j container (defaults: 7475/7688)
 
 ### Configuration
 
 The application now uses **port 8080** by default (changed from 8000 to avoid conflicts).
 
-To use a different port, create or edit `.env` file:
-```env
-API_PORT=9000  # or any other port
-```
+**Important**: The configuration defaults to using your **existing Neo4j instance** on the host machine.
 
 ### Running the Application
 
-1. **Start all services (Neo4j + API):**
+#### Option 1: Use Your Existing Neo4j (Recommended)
+
+If you already have Neo4j running on ports 7474/7687:
+
+1. **Update credentials in `.env` file:**
+   ```bash
+   cd backend
+   # Edit .env and set your Neo4j password
+   NEO4J_PASSWORD=your-actual-password
+   ```
+
+2. **Start only the API:**
    ```bash
    docker-compose up -d
    ```
+
+The API will connect to `bolt://host.docker.internal:7687` (your host Neo4j).
+
+#### Option 2: Start New Neo4j Container
+
+If you want to use a separate Neo4j instance for this project:
+
+1. **Ensure ports are available:**
+   ```bash
+   # Check if ports are free
+   lsof -i :7475
+   lsof -i :7688
+   ```
+
+2. **Start with Neo4j:**
+   ```bash
+   docker-compose --profile with-neo4j up -d
+   ```
+
+This will start Neo4j on ports 7475 (HTTP) and 7688 (Bolt) to avoid conflicts.
 
 2. **View logs:**
    ```bash
@@ -42,35 +72,43 @@ API_PORT=9000  # or any other port
 
 - **API**: http://localhost:8080 (or your configured port)
 - **API Docs**: http://localhost:8080/docs
-- **Neo4j Browser**: http://localhost:7474
+- **Neo4j Browser**:
+  - If using existing Neo4j: http://localhost:7474
+  - If using Docker Neo4j: http://localhost:7475
   - Username: `neo4j`
-  - Password: `astromusic123`
+  - Password: `astromusic123` (or your configured password)
 
 ### Port Configuration
 
-The default ports are:
-- API: 8080 (configurable via `API_PORT` env variable)
-- Neo4j HTTP: 7474
-- Neo4j Bolt: 7687
+**Default Configuration (uses existing Neo4j):**
+- API: 8080 (configurable via `API_PORT`)
+- Neo4j: Uses your existing instance on 7474/7687
 
-To change the API port, either:
+**Docker Neo4j Configuration:**
+- Neo4j HTTP: 7475 (configurable via `NEO4J_HTTP_PORT`)
+- Neo4j Bolt: 7688 (configurable via `NEO4J_BOLT_PORT`)
 
-**Option 1: Environment variable**
-```bash
-API_PORT=9000 docker-compose up -d
-```
+**Changing Ports:**
 
-**Option 2: .env file**
+**API Port:**
 ```env
+# In .env file
 API_PORT=9000
 ```
 
-**Option 3: Modify docker-compose.yml**
-```yaml
-ports:
-  - "9000:9000"
-environment:
-  - PORT=9000
+**Neo4j Connection (for existing Neo4j):**
+```env
+# In .env file
+NEO4J_URI=bolt://host.docker.internal:7687
+NEO4J_PASSWORD=your-password
+```
+
+**Neo4j Docker Ports (if using Docker Neo4j):**
+```env
+# In .env file
+NEO4J_URI=bolt://neo4j:7687
+NEO4J_HTTP_PORT=7475
+NEO4J_BOLT_PORT=7688
 ```
 
 ### Database: Neo4j
