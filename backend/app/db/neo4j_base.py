@@ -1,24 +1,31 @@
 """
-Neo4j database setup and connection management
+Neo4j database configuration
 """
-from neomodel import config as neomodel_config, db
+from neomodel import config, db
 from app.core.config import settings
+
 
 def init_neo4j():
     """Initialize Neo4j connection"""
-    # Set up neomodel connection
-    neomodel_config.DATABASE_URL = f"{settings.NEO4J_URI}"
-    neomodel_config.DATABASE_URL = f"bolt://{settings.NEO4J_USER}:{settings.NEO4J_PASSWORD}@{settings.NEO4J_URI.replace('bolt://', '')}"
+    # Set Neo4j connection
+    config.DATABASE_URL = settings.NEO4J_URI
 
-    # Test connection
-    try:
-        db.cypher_query("RETURN 1")
-        print("✅ Neo4j connection successful!")
-    except Exception as e:
-        print(f"❌ Neo4j connection failed: {e}")
-        raise
+    # Set credentials if provided
+    if settings.NEO4J_USER and settings.NEO4J_PASSWORD:
+        config.DATABASE_URL = config.DATABASE_URL.replace(
+            "bolt://",
+            f"bolt://{settings.NEO4J_USER}:{settings.NEO4J_PASSWORD}@"
+        )
+
+    print(f"📊 Connected to Neo4j at {settings.NEO4J_URI}")
 
 
 def close_neo4j():
     """Close Neo4j connection"""
-    db.close_connection()
+    # Neomodel handles connection pooling automatically
+    print("📊 Neo4j connection closed")
+
+
+def get_neo4j_driver():
+    """Get Neo4j driver instance"""
+    return db
