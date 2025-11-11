@@ -4,14 +4,14 @@
 
 ### Prerequisites
 - Docker and Docker Compose installed
-- Port 8080 available for API (or configure a different port)
+- Port 8001 available for API (or configure a different port)
 - Either:
   - **Option A**: Existing Neo4j instance running on ports 7474/7687
   - **Option B**: Available ports for Neo4j container (defaults: 7475/7688)
 
 ### Configuration
 
-The application now uses **port 8080** by default (changed from 8000 to avoid conflicts).
+The application now uses **port 8001** by default (changed from 8000/8080 to avoid conflicts with other services).
 
 **Important**: The configuration defaults to using your **existing Neo4j instance** on the host machine.
 
@@ -70,8 +70,8 @@ This will start Neo4j on ports 7475 (HTTP) and 7688 (Bolt) to avoid conflicts.
 
 ### Accessing the Services
 
-- **API**: http://localhost:8080 (or your configured port)
-- **API Docs**: http://localhost:8080/docs
+- **API**: http://localhost:8001 (or your configured port)
+- **API Docs**: http://localhost:8001/docs
 - **Neo4j Browser**:
   - If using existing Neo4j: http://localhost:7474
   - If using Docker Neo4j: http://localhost:7475
@@ -81,7 +81,7 @@ This will start Neo4j on ports 7475 (HTTP) and 7688 (Bolt) to avoid conflicts.
 ### Port Configuration
 
 **Default Configuration (uses existing Neo4j):**
-- API: 8080 (configurable via `API_PORT`)
+- API: 8001 (configurable via `API_PORT`)
 - Neo4j: Uses your existing instance on 7474/7687
 
 **Docker Neo4j Configuration:**

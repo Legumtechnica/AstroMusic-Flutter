@@ -17,7 +17,7 @@ class AstrologyService {
   bool _isInitialized = false;
 
   AstrologyService({String? baseUrl})
-      : _baseUrl = baseUrl ?? 'https://api.astromusic.in/api/v1';
+      : _baseUrl = baseUrl ?? 'https://api.astromusic.in:8001/api/v1';
 
   Future<void> initialize() async {
     if (_isInitialized) return;

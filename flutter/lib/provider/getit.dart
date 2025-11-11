@@ -24,7 +24,9 @@ Future<void> setupLocator() async {
   getIt.registerSingleton<StorageService>(storageService);
 
   // Backend API URL
-  const apiBaseUrl = 'https://api.astromusic.in/api/v1';
+  // Production: https://api.astromusic.in:8001/api/v1
+  // Local dev: http://localhost:8001/api/v1
+  const apiBaseUrl = 'https://api.astromusic.in:8001/api/v1';
 
   final astrologyService = AstrologyService(baseUrl: apiBaseUrl);
   await astrologyService.initialize();
