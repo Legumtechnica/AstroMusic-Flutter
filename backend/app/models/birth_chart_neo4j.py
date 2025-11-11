@@ -7,7 +7,6 @@ from neomodel import (
     FloatProperty,
     DateTimeProperty,
     DateProperty,
-    TimeProperty,
     JSONProperty,
     UniqueIdProperty,
     RelationshipFrom,
@@ -25,7 +24,7 @@ class BirthChart(StructuredNode):
 
     # Birth Details
     birth_date = DateProperty(required=True)
-    birth_time = TimeProperty(required=True)
+    birth_time = StringProperty(required=True)  # Store as "HH:MM" string
     birth_latitude = FloatProperty(required=True)
     birth_longitude = FloatProperty(required=True)
     birth_place = StringProperty(required=True)
@@ -58,7 +57,7 @@ class BirthChart(StructuredNode):
         return {
             'id': self.uid,
             'birth_date': self.birth_date.isoformat() if self.birth_date else None,
-            'birth_time': self.birth_time.isoformat() if self.birth_time else None,
+            'birth_time': self.birth_time,  # Already a string
             'birth_latitude': self.birth_latitude,
             'birth_longitude': self.birth_longitude,
             'birth_place': self.birth_place,
