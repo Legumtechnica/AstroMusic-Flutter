@@ -17,7 +17,7 @@ class AstrologyService {
   bool _isInitialized = false;
 
   AstrologyService({String? baseUrl})
-      : _baseUrl = baseUrl ?? 'https://api.astromusic.app';
+      : _baseUrl = baseUrl ?? 'https://api.astromusic.in/api/v1';
 
   Future<void> initialize() async {
     if (_isInitialized) return;
@@ -40,7 +40,7 @@ class AstrologyService {
     if (!_isInitialized) await initialize();
 
     try {
-      final response = await _dio.post('/api/astrology/birth-chart', data: {
+      final response = await _dio.post('/astrology/birth-chart', data: {
         'birth_date': user.birthDate.toIso8601String(),
         'birth_time': user.birthTime,
         'birth_latitude': user.birthLatitude,
@@ -64,7 +64,7 @@ class AstrologyService {
     if (!_isInitialized) await initialize();
 
     try {
-      final response = await _dio.get('/api/astrology/transits');
+      final response = await _dio.get('/astrology/transits');
 
       // TODO: Parse response and create Planet objects
       throw UnimplementedError(
@@ -84,7 +84,7 @@ class AstrologyService {
     if (!_isInitialized) await initialize();
 
     try {
-      final response = await _dio.post('/api/astrology/cosmic-influence', data: {
+      final response = await _dio.post('/astrology/cosmic-influence', data: {
         'user_id': user.id,
         'birth_chart': {
           'sun_sign': birthChart.sunSign,
