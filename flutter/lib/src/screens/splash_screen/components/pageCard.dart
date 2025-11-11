@@ -7,7 +7,7 @@ Widget PageCard(
     {required int index, required String headline, required String subline}) {
   return GlassmorphicContainer(
     width: getProportionateScreenWidth(280),
-    height: getProportionateScreenHeight(240),
+    height: getProportionateScreenHeight(280),
     borderRadius: 30,
     blur: 20,
     alignment: Alignment.bottomCenter,
@@ -42,28 +42,34 @@ Widget PageCard(
           Text(
             headline,
             textAlign: TextAlign.left,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
                 color: Color.fromRGBO(255, 255, 255, 1),
                 fontFamily: 'SF Pro Display',
-                fontSize: 38,
+                fontSize: 32,
                 letterSpacing: 0.4,
                 fontWeight: FontWeight.w700,
                 height: 1.2),
           ),
-          SizedBox(height: 16),
-          Text(
-            subline,
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                color: Color.fromRGBO(235, 235, 245, 0.60),
-                fontFamily: 'SF Pro Text',
-                fontSize: 17,
-                letterSpacing: -0.23,
-                fontWeight: FontWeight.normal,
-                height: 1.3),
+          SizedBox(height: 12),
+          Flexible(
+            child: Text(
+              subline,
+              textAlign: TextAlign.left,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  color: Color.fromRGBO(235, 235, 245, 0.60),
+                  fontFamily: 'SF Pro Text',
+                  fontSize: 15,
+                  letterSpacing: -0.23,
+                  fontWeight: FontWeight.normal,
+                  height: 1.3),
+            ),
           ),
           SizedBox(
-            height: getProportionateScreenHeight(15),
+            height: getProportionateScreenHeight(12),
           ),
           index != 2
               ? Row(
@@ -119,7 +125,7 @@ Widget PageCard(
                 )
               : CustomButton(),
           SizedBox(
-            height: getProportionateScreenHeight(15),
+            height: getProportionateScreenHeight(10),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
