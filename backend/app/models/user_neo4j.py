@@ -34,11 +34,6 @@ class User(StructuredNode):
     def __str__(self):
         return f"<User: {self.email}>"
 
-    @property
-    def id(self):
-        """Get node ID"""
-        return self.uid
-
     def to_dict(self):
         """Convert to dictionary"""
         return {

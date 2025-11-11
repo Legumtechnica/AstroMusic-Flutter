@@ -53,11 +53,6 @@ class BirthChart(StructuredNode):
     def __str__(self):
         return f"<BirthChart: {self.lagna} Ascendant>"
 
-    @property
-    def id(self):
-        """Get node ID"""
-        return self.uid
-
     def to_dict(self):
         """Convert to dictionary"""
         return {
