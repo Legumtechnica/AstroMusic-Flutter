@@ -35,10 +35,6 @@ class Planet(StructuredNode):
     def __str__(self):
         return f"<Planet: {self.name}>"
 
-    @property
-    def id(self):
-        return self.uid
-
     def to_dict(self):
         return {
             'id': self.uid,
@@ -73,10 +69,6 @@ class ZodiacSign(StructuredNode):
     def __str__(self):
         return f"<ZodiacSign: {self.name_english}>"
 
-    @property
-    def id(self):
-        return self.uid
-
     def to_dict(self):
         return {
             'id': self.uid,
@@ -104,10 +96,6 @@ class Nakshatra(StructuredNode):
 
     def __str__(self):
         return f"<Nakshatra: {self.name}>"
-
-    @property
-    def id(self):
-        return self.uid
 
     def to_dict(self):
         return {
