@@ -1,6 +1,7 @@
 """
 Authentication schemas
 """
+from typing import Optional
 from pydantic import BaseModel, EmailStr
 
 
@@ -25,6 +26,3 @@ class LoginRequest(BaseModel):
 class RefreshTokenRequest(BaseModel):
     """Refresh token request schema"""
     refresh_token: str
-
-
-from typing import Optional
