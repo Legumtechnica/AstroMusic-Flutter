@@ -6,9 +6,8 @@ from app.models.user_neo4j import User
 from app.models.birth_chart_neo4j import BirthChart
 from app.models.music_neo4j import Raag, Track, Playlist
 
-# Import enums from old models (still needed for compatibility)
-from app.models.track import TrackType, GenerationStatus
-from app.models.playlist import PlaylistType
+# Import enums (no SQLAlchemy dependency)
+from app.models.enums import TrackType, GenerationStatus, PlaylistType
 
 __all__ = [
     "User",
