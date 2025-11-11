@@ -28,8 +28,8 @@ COPY . .
 RUN mkdir -p /app/uploads
 
 # Expose port (configurable via environment variable)
-ARG PORT=8080
+ARG PORT=8001
 EXPOSE ${PORT}
 
 # Run the application (port configured by docker-compose)
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080} --reload"]
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8001} --reload"]
