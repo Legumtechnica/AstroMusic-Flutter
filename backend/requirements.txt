@@ -4,7 +4,7 @@ uvicorn[standard]==0.24.0
 python-multipart==0.0.6
 
 # Database - Neo4j
-neo4j==5.14.1
+neo4j>=5.15.0
 neomodel==5.2.1
 
 # Authentication
