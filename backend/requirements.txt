@@ -15,7 +15,7 @@ pydantic==2.5.0
 pydantic-settings==2.1.0
 
 # Vedic Astrology
-vedicastro==1.0.0
+vedicastro==0.2.1
 
 # Utilities
 pytz==2023.3
