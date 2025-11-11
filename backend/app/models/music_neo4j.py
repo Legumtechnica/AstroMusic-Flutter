@@ -43,10 +43,6 @@ class Raag(StructuredNode):
     def __str__(self):
         return f"<Raag: {self.name}>"
 
-    @property
-    def id(self):
-        return self.uid
-
     def to_dict(self):
         return {
             'id': self.uid,
@@ -99,10 +95,6 @@ class Track(StructuredNode):
 
     def __str__(self):
         return f"<Track: {self.title}>"
-
-    @property
-    def id(self):
-        return self.uid
 
     @property
     def formatted_duration(self):
@@ -159,10 +151,6 @@ class Playlist(StructuredNode):
 
     def __str__(self):
         return f"<Playlist: {self.title}>"
-
-    @property
-    def id(self):
-        return self.uid
 
     @property
     def is_expired(self):
