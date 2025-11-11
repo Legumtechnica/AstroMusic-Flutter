@@ -12,7 +12,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
-    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
@@ -28,8 +27,9 @@ COPY . .
 # Create uploads directory
 RUN mkdir -p /app/uploads
 
-# Expose port
-EXPOSE 8000
+# Expose port (configurable via environment variable)
+ARG PORT=8080
+EXPOSE ${PORT}
 
-# Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Run the application (port configured by docker-compose)
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080} --reload"]
